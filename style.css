@@ -1,0 +1,92 @@
+:root {
+    --header-height: 35px;
+    --bg-color: #123;
+    --bg-color-hover: #246;
+    --bg-color-focus: #246;
+    --bg-header: #357;
+    --txt-color: #FFF;
+    --txt-link: #DA0;
+    --txt-link-hover: #FC0;
+    --border: 2px solid #05080B;
+    --convert-bg-color: #18293a;
+    --convert-bg-color-selected: #1f364f;
+    --space-big: 20px;
+    --note-size: 40px;
+}
+
+body,
+textarea {
+    font-family: sans-serif;
+}
+
+body {
+    font-size: 20px;
+    background-color: var(--bg-color);
+    color: var(--txt-color);
+    margin: 0;
+    padding: 0;
+    min-width: 100vw;
+}
+
+a {
+    color: var(--txt-link);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--txt-link-hover);
+}
+
+#header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--header-height);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-header);
+    border-bottom: var(--border);
+    padding: 0px var(--space-big);
+}
+
+main#content {
+    margin-top: var(--header-height);
+    min-height: calc(100vh - var(--header-height));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+canvas#draw {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.col {
+    flex-direction: column;
+}
+
+#musicalKeys {
+    display: flex;
+    flex-direction: column;
+}
+
+#musicalKeys div {
+    display: flex;
+}
+
+.music-note {
+    width: var(--note-size);
+    height: var(--note-size);
+}

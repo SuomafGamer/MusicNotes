@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Musical Notes</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="particles.js"></script>
+    <script src="draw.js"></script>
+    <script src="script.js"></script>
+</head>
+
+<body>
+    <div id="header">
+        <div id="title">Musical Notes</div>
+        <div class="container">
+            <label for="effects">No Effects</label>
+            <input type="checkbox" id="effects">
+            <label for="volume">Volume</label>
+            <input type="range" id="volume" min="0" max="0.2" step="0.01" value="0.05">
+            <button id="oscillatorType" onclick="changeOscillator()">sine</button>
+        </div>
+    </div>
+    <main id="content">
+        <canvas id="draw"></canvas>
+        <div class="container col">
+            <div>
+                <button onclick="playScript()">Still</button>
+            </div>
+            <div id="musicalKeys">
+                <!-- GENERATED ON INIT -->
+            </div>
+        </div>
+    </main>
+    <script>
+        init();
+    </script>
+</body>
+
+</html>
