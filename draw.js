@@ -10,12 +10,9 @@ const drawRef = {
     ctx: null,
     width: null,
     height: null,
-    background: 1,
-    backgroundModSpd: 1,
     // BG Canvas
     bgcanvas: null,
     bgctx: null,
-    opacity: 1,
 };
 // For tick-rate calculations
 let __updater = 0;
@@ -63,13 +60,17 @@ function drawRender() {
     drawRef.ctx.drawImage(drawRef.bgcanvas, 0, 0);
 }
 function drawNote(note, particleCount = 100) {
+    const widthPer = 1 - ((parseInt(note.substr(-1)) - 1) / 8);
     const sliceWidth = drawRef.width / noteCount;
+    const randomWidthRange = sliceWidth * widthPer;
+    const rangeInc = sliceWidth * (1 - widthPer) * 0.5;
     const slice = noteId[note.substr(0, note.length - 1)] - 1;
+    particleCount *= widthPer;
     for (i = 0; i < particleCount; i++) {
-        const x = Math.floor(Math.random() * sliceWidth + slice * sliceWidth);
+        const x = Math.floor(Math.random() * randomWidthRange + (slice * sliceWidth) + rangeInc);
         const props = {
             x,
-            spd: Math.random() * 1 + 2
+            spd: Math.random() * 0.25 + 2
         }
         drawRef.particles.stars.push(drawRef.particles.newStar(props));
     }

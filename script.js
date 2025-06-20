@@ -1,6 +1,6 @@
 // Track if the mouse is being held down
 let mouseIsDown = false;
-
+const octaves = ['1', '2', '3', '4', '5', '6', '7', '8'];
 // The note frequencies - 7 Primary: C D E F G A B - 10 Modified
 const noteFrequencies = {
     C: 0,
@@ -21,12 +21,11 @@ const noteFrequencies = {
     'Bb': 10,
     B: 11,
 };
-const noteCount = 17;
+const noteCount = Object.keys(noteFrequencies).length;
+const totalNotes = octaves.length * noteCount;
 const noteId = {
-    C: 1, 'C#': 2, 'Db': 3, D: 4, 'D#': 5,
-    'Eb': 6, E: 7, F: 8, 'F#': 9, 'Gb': 10,
-    G: 11, 'G#': 12, 'Ab': 13, A: 14, 'A#': 15,
-    'Bb': 16, B: 17
+    C: 1, 'C#': 2, 'Db': 3, D: 4, 'D#': 5, 'Eb': 6, E: 7, F: 8, 'F#': 9, 'Gb': 10,
+    G: 11, 'G#': 12, 'Ab': 13, A: 14, 'A#': 15, 'Bb': 16, B: 17
 };
 
 // Oscillator
@@ -82,8 +81,10 @@ function playNote(note, { sustain = false, duration = 0.35, attack = 0.05, relea
     // oscillator.stop(now + duration + release);
 
     if (sustain) {
+        colourKey(note, { action: 'on' });
         sustainedNotes[note] = { oscillator, gainNode, release };
     } else {
+        colourKey(note, { duration });
         gainNode.gain.setValueAtTime(volume, now + duration);
         gainNode.gain.linearRampToValueAtTime(0, now + duration + release);
         oscillator.stop(now + duration + release);
@@ -92,6 +93,7 @@ function playNote(note, { sustain = false, duration = 0.35, attack = 0.05, relea
 // Stops a sustained note
 function stopNote(note) {
     if (sustainedNotes[note]) {
+        colourKey(note, { action: 'off' });
         const now = context.currentTime;
         const { oscillator, gainNode, release } = sustainedNotes[note];
         gainNode.gain.setValueAtTime(gainNode.gain.value, now);
@@ -107,18 +109,65 @@ function overNote(note) {
         playNote(note, { sustain: true });
     }
 }
+function getHex2(dec) {
+    const hex = dec.toString(16);
+    return hex.length == 2 ? hex : '0' + hex;
+}
+function colourKey(note, props) {
+    const { action, duration } = props || {};
+    const regex = /^([A-Ga-g#b]{1,2})(\d)$/;
+    const match = note.match(regex);
+    const [, pitch, octave] = match;
+    const totalId = noteId[pitch] + (octave - 1) * 17;
+    const per = (totalId - 1) / totalNotes;
+    const inc = Math.floor(154 * per);
+    const r = 0; // 0   - 154
+    const g = 51; // 51  - 205
+    const b = 102; // 102 - 256
+    const rd = r + inc;
+    const gd = g + inc;
+    const bd = b + inc;
+    const highlightColour = '#' + getHex2(rd) + getHex2(gd) + getHex2(bd);
+    if (action == 'on') {
+        // Highlight on
+        const noteBtn = document.querySelector(`[data-note="${note}"]`);
+        noteBtn.style.transition = 'none';
+        noteBtn.style.backgroundColor = highlightColour;
+    } else if (action == 'off') {
+        // Highlight off
+        const noteBtn = document.querySelector(`[data-note="${note}"]`);
+        noteBtn.style.transition = '';
+        noteBtn.style.backgroundColor = '';
+    } else {
+        // Highlight on/off
+        const noteBtn = document.querySelector(`[data-note="${note}"]`);
+        noteBtn.style.transition = 'none';
+        noteBtn.style.backgroundColor = highlightColour;
+        setTimeout(() => {
+            noteBtn.style.transition = '';
+            noteBtn.style.backgroundColor = '';
+        }, Math.round(duration * 1000));
+    }
+}
 
 // Random sounds
 function playScript() {
-    let keyDur = 0.33;
+    let keyDur = 0.25;
     let time = 0;
-    const timeInc = 365;
-    const pitch = 5;
+    const timeInc = 320;
+    const pitch = 4;
     const props = {
         duration: keyDur,
         attack: 0.1,
-        release: 0.15,
+        release: 0.2,
     };
+    // playNote(`F#1`, { duration: 2 });
+    // setTimeout(() => {
+    //     playNote(`F1`, { duration: 1 });
+    // }, 1500);
+    // setTimeout(() => {
+    //     playNote(`G1`, { duration: 1 });
+    // }, 2500);
     setTimeout(() => {
         playNote(`C${pitch}`, props);
         playNote(`E${pitch}`, props);
@@ -223,7 +272,7 @@ function init() {
     // Render the music notes to the DOM
     const musicalKeys = Object.keys(noteFrequencies);
     const notesContainer = document.querySelector("#musicalKeys");
-    ['1', '2', '3', '4', '5', '6', '7', '8'].forEach(pitch => {
+    octaves.forEach(pitch => {
         const newRow = document.createElement("div");
         musicalKeys.forEach(key => {
             const note = key + pitch;

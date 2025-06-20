@@ -3,8 +3,6 @@ class Particles {
         // Variables
         this.stars = [];
 
-        this.starSpeed = 2.0;
-
         // Sprites
         this.starSprites = [];
 
@@ -72,7 +70,8 @@ class Particles {
         // Stars
         for (let i = 0; i < this.stars.length; i++) {
             let item = this.stars[i];
-            item.y -= this.starSpeed * item.speed + drawRef.backgroundModSpd / 2;
+            item.y -= item.speed;
+            item.speed *= 1.01;
             if (item.y < item.radius * -1) {
                 this.stars.splice(i--, 1);
             }
@@ -80,7 +79,7 @@ class Particles {
     }
     render() {
         // Reset Opacity
-        drawRef.bgctx.globalAlpha = drawRef.opacity;
+        // drawRef.bgctx.globalAlpha = 1;
         // Stars
         this.stars.forEach(item => {
             drawRef.bgctx.drawImage(item.canvas, item.x, item.y);

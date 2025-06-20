@@ -89,4 +89,5 @@ canvas#draw {
 .music-note {
     width: var(--note-size);
     height: var(--note-size);
+    transition: background-color 0.5s;
 }
