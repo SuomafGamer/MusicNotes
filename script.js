@@ -161,13 +161,6 @@ function playScript() {
         attack: 0.1,
         release: 0.2,
     };
-    // playNote(`F#1`, { duration: 2 });
-    // setTimeout(() => {
-    //     playNote(`F1`, { duration: 1 });
-    // }, 1500);
-    // setTimeout(() => {
-    //     playNote(`G1`, { duration: 1 });
-    // }, 2500);
     setTimeout(() => {
         playNote(`C${pitch}`, props);
         playNote(`E${pitch}`, props);
@@ -267,6 +260,44 @@ function playScript() {
     }, time);
 }
 
+// Map keys to notes
+const keyMap = {
+    // 3
+    'q': 'C3',
+    'w': 'D3',
+    'e': 'E3',
+    'r': 'F3',
+    't': 'G3',
+    'y': 'A3',
+    'u': 'B3',
+    // 4
+    'a': 'C4',
+    's': 'D4',
+    'd': 'E4',
+    'f': 'F4',
+    'g': 'G4',
+    'h': 'A4',
+    'j': 'B4',
+    // 5
+    'z': 'C5',
+    'x': 'D5',
+    'c': 'E5',
+    'v': 'F5',
+    'b': 'G5',
+    'n': 'A5',
+    'm': 'B5',
+};
+function keyDown(key) {
+    if (keyMap[key]) {
+        playNote(keyMap[key], { sustain: true });
+    }
+}
+function keyUp(key) {
+    if (keyMap[key]) {
+        stopNote(keyMap[key]);
+    }
+}
+
 // Initialize
 function init() {
     // Render the music notes to the DOM
@@ -286,8 +317,10 @@ function init() {
     });
 
     // Track if mouse is down
-    document.addEventListener('mousedown', () => { mouseIsDown = true; })
-    document.addEventListener('mouseup', () => { mouseIsDown = false; })
+    document.addEventListener('mousedown', () => { mouseIsDown = true; });
+    document.addEventListener('mouseup', () => { mouseIsDown = false; });
+    document.addEventListener('keydown', (event) => keyDown(event.key.toLowerCase()));
+    document.addEventListener('keyup', (event) => keyUp(event.key.toLowerCase()));
 
     // Configure the music note events
     const musicNotes = document.querySelectorAll(".music-note");
